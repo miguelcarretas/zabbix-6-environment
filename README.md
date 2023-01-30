@@ -4,7 +4,9 @@
 
 :fire: Create `zabbix-net` docker network:
 
+```bash
 docker network create --subnet 172.9.0.0/16 --ip-range 172.9.240.0/20 zabbix-net
+```
 
 :fire: If not exists, create the following directories, become `root`:
 
