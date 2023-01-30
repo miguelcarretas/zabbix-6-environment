@@ -2,12 +2,6 @@
 
 :information_source: This proyect allow to run zabbix-server, mysql-server (two instances), zabbix-nginx-web, zabbix-java-gateway and zabbix-proxy
 
-:fire: Create `zbx_net` docker network:
-
-```bash
-docker network create --subnet 172.9.0.0/16 --ip-range 172.9.240.0/20 zbx_net
-```
-
 :fire: If not exists, create the following directories, become `root`:
 
 ```bash
