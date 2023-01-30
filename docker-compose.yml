@@ -102,7 +102,7 @@ services:
   environment:
    - ZBX_SERVER_HOST=zabbix-server-mysql
    - ZBX_SERVER_HOST=10051
-   - ZBX_SERVER_NAME=zabbix.tirant.net
+   - ZBX_SERVER_NAME=zabbix.lab.local
    - ZBX_UPLOADMAXFILESIZE=10M
    - ZBX_MAXINPUTTIME=300
    - PHP_FPM_PM=dynamic
