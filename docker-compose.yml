@@ -18,17 +18,14 @@ services:
   environment:
    - MYSQL_USER=zabbix
    - MYSQL_DATABASE=zabbix
-   - MYSQL_PASSWORD=WICr~x@]1b}-4A{D
-   - MYSQL_ROOT_PASSWORD=K9$$o51PdH5L.jjp66UY_
-   - ZBX_JAVAGATEWAY=zabbix-java-gateway
+   - MYSQL_PASSWORD=zabbix
+   - MYSQL_ROOT_PASSWORD=zabbix
+  cap_add:
+    - SYS_NICE
   volumes:
    - /var/lib/mysql:/var/lib/mysql:rw
    - /opt/mysql/conf:/etc/my.cnf.d:ro
-  deploy:
-    resources:
-      limits:
-        cpus: '1'
-        memory: 2G
+   - /etc/localtime:/etc/localtime:ro
 
  mysql-server-zabbix-proxy:
   image: mysql:8.0.26
@@ -48,30 +45,23 @@ services:
   environment:
    - MYSQL_USER=zabbix
    - MYSQL_DATABASE=zabbix-proxy
-   - MYSQL_PASSWORD=WICr~x@]1b}-4A{D
-   - MYSQL_ROOT_PASSWORD=K9$$o51PdH5L.jjp66UY_
-   - ZBX_JAVAGATEWAY=zabbix-java-gateway
+   - MYSQL_PASSWORD=zabbix
+   - MYSQL_ROOT_PASSWORD=zabbix
   volumes:
-   - /opt/mysql2/lib:/var/lib/mysql:rw
-   - /opt/mysql2/conf:/etc/my.cnf.d:ro
-  deploy:
-    resources:
-      limits:
-        cpus: '1'
-        memory: 2G
+   - /etc/localtime:/etc/localtime:ro
+  cap_add:
+    - SYS_NICE
 
 # Definicion de servidor Apache
 
  zabbix-server-mysql:
-  image: zabbix/zabbix-server-mysql:alpine-6.0-latest
+  image: zabbix/zabbix-server-mysql:alpine-6.2.6
   container_name: zabbix-server
   networks:
    - zbx_net
   ports:
    - 10051:10051
   volumes:
-   - /etc/localtime:/etc/localtime:ro
-   - /etc/timezone:/etc/timezone:ro
    - /usr/lib/zabbix/alertscripts:/usr/lib/zabbix/alertscripts:ro
    - /usr/lib/zabbix/externalscripts:/usr/lib/zabbix/externalscripts:ro
    - /var/lib/zabbix/export:/var/lib/zabbix/export:rw
@@ -80,27 +70,44 @@ services:
    - /var/lib/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
    - /var/lib/zabbix/mibs:/var/lib/zabbix/mibs:ro
    - /var/lib/zabbix/snmptraps:/var/lib/zabbix/snmptraps:rw
+   - /etc/localtime:/etc/localtime:ro
   environment:
    - DB_SERVER_HOST=mysql-server
    - MYSQL_DATABASE=zabbix
    - MYSQL_USER=zabbix
-   - MYSQL_PASSWORD=WICr~x@]1b}-4A{D
-   - MYSQL_ROOT_PASSWORD=K9$$o51PdH5L.jjp66UY_
-   - ZBX_JAVAGATEWAY=zabbix-java-gateway
+   - MYSQL_PASSWORD=zabbix
+   - MYSQL_ROOT_PASSWORD=zabbix
+   - ZBX_STARTPOLLERS=5
+   - ZBX_STARTPOLLERSUNREACHABLE=50
+   - ZBX_STARTPINGERS=50
+   - ZBX_STARTTRAPPERS=10
+   - ZBX_STARTDISCOVERERS=15
+   - ZBX_STARTPREPROCESSORS=15
+   - ZBX_STARTHTTPPOLLERS=5
+   - ZBX_STARTALERTERS=5
+   - ZBX_STARTTIMERS=2
+   - ZBX_STARTESCALATORS=2
+   - ZBX_STARTVMWARECOLLECTORS=0
+   - ZBX_VMWAREFREQUENCY=60
+   - ZBX_VMWAREPERFFREQUENCY=60
+   - ZBX_VMWARECACHESIZE=8M
+   - ZBX_VMWARETIMEOUT=10
+   - ZBX_HOUSEKEEPINGFREQUENCY=1
+   - ZBX_MAXHOUSEKEEPERDELETE=5000
+   - ZBX_PROBLEMHOUSEKEEPINGFREQUENCY=60
    - ZBX_CACHESIZE=2G
-   - ZBX_TRENDCACHESIZE=2G
-  deploy:
-    resources:
-      limits:
-        cpus: '1'
-        memory: 2G
+   - ZBX_TRENDCACHESIZE=32M
+   - ZBX_VALUECACHESIZE=256M
+   - ZBX_HISTORYCACHESIZE=32M
+   - ZBX_TIMEOUT=30
+     #- ZBX_DEBUGLEVEL=3
   depends_on:
    - mysql-server
 
 # Definicion de zabbix web Nginx:
 
  zabbix-web-nginx-mysql:
-  image: zabbix/zabbix-web-nginx-mysql:alpine-6.0-latest
+  image: zabbix/zabbix-web-nginx-mysql:alpine-6.2.6
   container_name: zabbix-web-nginx
   networks:
    - zbx_net
@@ -111,12 +118,11 @@ services:
    - 80
    - 8443
   volumes:
-   - /etc/localtime:/etc/localtime:ro
-   - /etc/timezone:/etc/timezone:ro
    - /opt/etc/ssl/nginx:/etc/ssl/nginx:rw
+   - /etc/localtime:/etc/localtime:ro
   environment:
    - ZBX_SERVER_HOST=zabbix-server-mysql
-   - ZBX_SERVER_HOST=10051
+   - ZBX_SERVER_PORT=10051
    - ZBX_SERVER_NAME=zabbix.tirant.net
    - ZBX_UPLOADMAXFILESIZE=10M
    - ZBX_MAXINPUTTIME=300
@@ -130,36 +136,28 @@ services:
    - DB_SERVER_HOST=mysql-server
    - DB_SERVER_USER=zabbix
    - DB_SERVER_PASS=WICr~x@]1b}-4A{D
+   - DB_SERVER_DBNAME=zabbix
+   - DB_SERVER_PORT=3306
    - MYSQL_DATABASE=zabbix
    - MYSQL_USER=zabbix
-   - MYSQL_PASSWORD=WICr~x@]1b}-4A{D
-   - MYSQL_ROOT_PASSWORD=K9$$o51PdH5L.jjp66UY_
-  deploy:
-    resources:
-      limits:
-        cpus: '1'
-        memory: 2G
+   - MYSQL_PASSWORD=zabbix
+   - MYSQL_ROOT_PASSWORD=zabbix
   depends_on:
    - mysql-server
    - zabbix-server-mysql
 
 # Definicion de zabbix java gateway:
  zabbix-java-gateway:
-  image: zabbix/zabbix-java-gateway:alpine-6.0-latest
+  image: zabbix/zabbix-java-gateway:alpine-6.2.6
   container_name: zabbix-java-gateway
   networks:
    - zbx_net
   ports:
    - 10052:10052
-  deploy:
-    resources:
-      limits:
-        cpus: '1'
-        memory: 2G
 
 # Definicion de zabbix proxy:
  zabbix-proxy-mysql:
-  image: zabbix/zabbix-proxy-mysql:alpine-6.0-latest
+  image: zabbix/zabbix-proxy-mysql:alpine-6.2.6
   container_name: zabbix-proxy
   networks:
    - zbx_net
@@ -173,27 +171,41 @@ services:
    - /var/lib/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
    - /var/lib/zabbix/mibs:/var/lib/zabbix/mibs:ro
    - /var/lib/zabbix/snmptraps:/var/lib/zabbix/snmptraps:rw
+   - /etc/localtime:/etc/localtime:ro
   environment:
    - DB_SERVER_HOST=mysql-server-zabbix-proxy
    - DB_SERVER_PORT=3306
    - MYSQL_DATABASE=zabbix-proxy
    - MYSQL_USER=zabbix
-   - MYSQL_PASSWORD=WICr~x@]1b}-4A{D
+   - MYSQL_PASSWORD=zabbix
    - ZBX_PROXYMODE=0
    - ZBX_HOSTNAME=zabbix-proxy
    - ZBX_SERVER_HOST=zabbix-server-mysql
    - ZBX_SERVER_PORT=10051
    - ZBX_CACHESIZE=2G
    - ZBX_TRENDCACHESIZE=2G
-   - ZBX_JAVAGATEWAY=zabbix-java-gateway
-  deploy:
-    resources:
-      limits:
-        cpus: '1'
-        memory: 2G
+     #- ZBX_DEBUGLEVEL=3
   depends_on:
    - mysql-server-zabbix-proxy
    - zabbix-server-mysql
+
+ grafana:
+   image: grafana/grafana-enterprise:9.3.6
+   container_name: grafana-enterprise
+   ports:
+     - 3000:3000
+   restart: on-failure
+   volumes:
+     - /opt/grafana/var/lib/grafana:/var/lib/grafana
+     - /opt/grafana/var/log:/var/log/grafana
+     - /opt/grafana/etc/grafana:/etc/grafana
+     - /etc/localtime:/etc/localtime:ro
+   networks:
+     - zbx_net
+   depends_on:
+    - mysql-server
+    - zabbix-server-mysql
+    - zabbix-web-nginx-mysql
 
 # Definicion de red:
 networks:
