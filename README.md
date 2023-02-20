@@ -33,7 +33,14 @@ mkdir -p /opt/nginx/ssl
 mkdir -p /opt/nginx/http.d/
 ```
 
-Download `telegraf.conf` file and replace with your vCenter's values and connections string:
+Download `telegraf.conf` file and replace with your vCenter's values and connections string.
+
+Add your own SSL certifacates into `/opt/nginx/ssl/` path (.crt and .key files):
+
+```
+lab.local.crt
+lab.local.key
+```
 
 After create these directories, run docker compose:
 
