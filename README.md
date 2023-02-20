@@ -1,6 +1,6 @@
 # zabbix-6-environment
 
-:information_source: This proyect allow to run zabbix-server, mysql-server (two instances), zabbix-nginx-web, zabbix-java-gateway and zabbix-proxy
+:information_source: This proyect allow to run zabbix-server, mysql-server (two instances), zabbix-nginx-web, zabbix-java-gateway, zabbix-proxy, inlfuxdb and telegraf containers
 
 :fire: If not exists, create the following directories, become `root`:
 
@@ -22,7 +22,18 @@ mkdir -p /opt/mysql2/conf
 mkdir -p /var/lib/mysql
 mkdir -p /opt/mysql/conf
 mkdir -p /etc/ssl/certs
+mkdir -p /opt/grafana/var/lib/
+mkdir -p /opt/grafana/var/log
+mkdir -p /opt/grafana/etc/grafana
+mkdir -p /opt/influxdb/var
+mkdir -p /opt/influxdb/etc
+mkdir -p /opt/telegraf/etc/
+mkdir -p /opt/telegraf/etc/hosts
+mkdir -p /opt/nginx/ssl
+mkdir -p /opt/nginx/http.d/
 ```
+
+Download `telegraf.conf` file and replace with your vCenter's values and connections string:
 
 After create these directories, run docker compose:
 
