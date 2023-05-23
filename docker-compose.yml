@@ -23,7 +23,7 @@ services:
   cap_add:
     - SYS_NICE
   volumes:
-   - /var/lib/mysql:/var/lib/mysql:rw
+   - /opt/mysql/lib:/var/lib/mysql:rw
    - /opt/mysql/conf:/etc/my.cnf.d:ro
    - /etc/localtime:/etc/localtime:ro
 
@@ -62,14 +62,14 @@ services:
   ports:
    - 10051:10051
   volumes:
-   - /usr/lib/zabbix/alertscripts:/usr/lib/zabbix/alertscripts:ro
-   - /usr/lib/zabbix/externalscripts:/usr/lib/zabbix/externalscripts:ro
-   - /var/lib/zabbix/export:/var/lib/zabbix/export:rw
-   - /var/lib/zabbix/modules:/var/lib/zabbix/modules:ro
-   - /var/lib/zabbix/enc:/var/lib/zabbix/enc:ro
-   - /var/lib/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
-   - /var/lib/zabbix/mibs:/var/lib/zabbix/mibs:ro
-   - /var/lib/zabbix/snmptraps:/var/lib/zabbix/snmptraps:rw
+   - /opt/zabbix/alertscripts:/usr/lib/zabbix/alertscripts:ro
+   - /opt/zabbix/externalscripts:/usr/lib/zabbix/externalscripts:ro
+   - /opt/zabbix/export:/var/lib/zabbix/export:rw
+   - /opt/zabbix/modules:/var/lib/zabbix/modules:ro
+   - /opt/zabbix/enc:/var/lib/zabbix/enc:ro
+   - /opt/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
+   - /opt/zabbix/mibs:/var/lib/zabbix/mibs:ro
+   - /opt/zabbix/snmptraps:/var/lib/zabbix/snmptraps:rw
    - /etc/localtime:/etc/localtime:ro
   environment:
    - DB_SERVER_HOST=mysql-server
@@ -163,15 +163,15 @@ services:
   networks:
    - zbx_net
   volumes:
-   - /etc/ssl/certs:/etc/ssl/certs:ro
-   - /usr/lib/zabbix/alertscripts:/usr/lib/zabbix/alertscripts:ro
-   - /usr/lib/zabbix/externalscripts:/usr/lib/zabbix/externalscripts:ro
-   - /var/lib/zabbix/export:/var/lib/zabbix/export:rw
-   - /var/lib/zabbix/modules:/var/lib/zabbix/modules:ro
-   - /var/lib/zabbix/enc:/var/lib/zabbix/enc:ro
-   - /var/lib/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
-   - /var/lib/zabbix/mibs:/var/lib/zabbix/mibs:ro
-   - /var/lib/zabbix/snmptraps:/var/lib/zabbix/snmptraps:rw
+   - /opt/ssl/certs:/etc/ssl/certs:ro
+   - /opt/zabbix/alertscripts:/usr/lib/zabbix/alertscripts:ro
+   - /opt/zabbix/externalscripts:/usr/lib/zabbix/externalscripts:ro
+   - /opt/zabbix/export:/var/lib/zabbix/export:rw
+   - /opt/zabbix/modules:/var/lib/zabbix/modules:ro
+   - /opt/zabbix/enc:/var/lib/zabbix/enc:ro
+   - /opt/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
+   - /opt/zabbix/mibs:/var/lib/zabbix/mibs:ro
+   - /opt/zabbix/snmptraps:/var/lib/zabbix/snmptraps:rw
    - /etc/localtime:/etc/localtime:ro
   environment:
    - DB_SERVER_HOST=mysql-server-zabbix-proxy
