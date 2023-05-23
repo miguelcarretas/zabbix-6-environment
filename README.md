@@ -8,7 +8,6 @@
 mkdir -p /etc/localtime
 mkdir -p /etc/timezone
 mkdir -p /opt/zabbix/modules
-mkdir -p /opt/etc/ssl/nginx
 mkdir -p /opt/zabbix/alertscripts
 mkdir -p /opt/zabbix/externalscripts
 mkdir -p /opt/zabbix/export
@@ -19,7 +18,7 @@ mkdir -p /opt/zabbix/mibs
 mkdir -p /opt/zabbix/snmptraps
 mkdir -p /opt/mysql2/lib
 mkdir -p /opt/mysql2/conf
-mkdir -p /opt/mysql/
+mkdir -p /opt/mysql/lib
 mkdir -p /opt/mysql/conf
 mkdir -p /opt/ssl/certs
 mkdir -p /opt/grafana/var/lib/
